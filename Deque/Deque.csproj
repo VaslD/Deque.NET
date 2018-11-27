@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <AssemblyName>System.Collections.Deque</AssemblyName>
+        <Version>1.0.2.1</Version>
+        <Authors>Diogo Castro</Authors>
+        <PackageId>Deque.NET</PackageId>
+        <Product>Deque.NET</Product>
+        <Description>Deque.NET provides a concurrent lock-free Deque C# implementation.
+
+A Deque, or Double-Ended Queue, is a data structure that allows insertion and removal of items on both ends.
+
+Concurrent Deque class supports 6 operations in constant time: Push Right, Pop Right, Peek Right, Push Left, Pop Left and Peek Left. Deque.NET also offers a simpler Deque class (not thread safe), implemented as a ring buffer. This implementation allows Pop and Peek operations to run in constant time and Push operations in amortized O(1) time.</Description>
+        <PackageLicenseUrl>https://github.com/dcastro/DequeNET/blob/v1.0.2/LICENSE.txt</PackageLicenseUrl>
+        <PackageProjectUrl>https://github.com/dcastro/DequeNET</PackageProjectUrl>
+        <RepositoryType />
+        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <DefineConstants />
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+      <DefineConstants>DEBUG;TRACE</DefineConstants>
+    </PropertyGroup>
+
+</Project>
