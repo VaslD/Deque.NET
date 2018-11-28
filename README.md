@@ -11,7 +11,12 @@ This implementation allows all 6 operations to be executed in constant time O(1)
 
 ## Revisions
 
-Based on release 1.0.2 of the original project, this fork targets *.NET Standard 2.0* and uses *NUnit 3* for unit-testing. Everything from the original project is refactored but no fundamental change is made to underlying algorithms and APIs.
+Based on release 1.0.2 of the original project, this fork has made several changes to the original project:
+
+1. Targets *.NET Standard 2.0* and uses *NUnit 3* for unit-testing.
+2. Two collection classes are moved to *System.Collections* namespace. Both implementations seem good enough to be included in the standard library. (Honestly I did this so I can write less `using`s. )
+3. `Deque<T>` and its abstract interface `IDeque<T>` no longer implements `ICollection<T>`. `ICollection<T>` defines an interface best suited for collections that provide unrestricted access (such as `List<T>`) to their elements, which isn't the case for a Deque. Instead, `Deque<T>` now implements only `ICollection` (the non-generic version) and `IReadOnlyCollection<T>`.
+4. `ConcurrentDeque<T>` and its abstract interface `IConcurrentDeque<T>` no longer implements `IProducerConsumerCollection<T>`. `IProducerConsumerCollection<T>` defines a single entry and a single exit point for elements. This model works for `ConcurrentStack<T>` and `ConcurrentQueue<T>`, but doesn't hold true for `ConcurrentDeque<T>`. Instead, `ConcurrentDeque<T>` now implements only `ICollection` (the non-generic version) and `IReadOnlyCollection<T>`.
 
 ## The Algorithm
 
@@ -29,4 +34,4 @@ PeekRight and PeekLeft run in constant time regardless of contention.
 
 ## Installation
 
-Since this is a tailored duplicate of DequeNET for personal use, it is not published on NuGet and never will be. The original DequeNET package is [available there](https://www.nuget.org/packages/DequeNET/).
+Since this is a tailored duplicate of DequeNET for personal use, this project is not published on NuGet and never will be. The original DequeNET package is [available there](https://www.nuget.org/packages/DequeNET/).
