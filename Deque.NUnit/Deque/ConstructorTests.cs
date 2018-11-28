@@ -10,13 +10,13 @@ namespace Deque.NUnit.Deque
         [Test]
         public void WithNegativeCapacityThrowsException()
         {
-            Assert.Throws<ArgumentOutOfRangeException>(() => new Deque<Int32>(-1));
+            Assert.Throws<ArgumentOutOfRangeException>(() => _ = new Deque<Int32>(-1));
         }
 
         [Test]
         public void WithNullIEnumerableThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() => new Deque<Int32>(null));
+            Assert.Throws<ArgumentNullException>(() => _ = new Deque<Int32>(null));
         }
 
         [Test]

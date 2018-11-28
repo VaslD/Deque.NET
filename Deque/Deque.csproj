@@ -24,6 +24,7 @@ Concurrent Deque class supports 6 operations in constant time: Push Right, Pop R
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
       <DefineConstants>DEBUG;TRACE</DefineConstants>
+      <DocumentationFile>C:\Users\DYH\Documents\Visual Studio 2017\Projects\Deque\Deque\System.Collections.Deque.xml</DocumentationFile>
     </PropertyGroup>
 
 </Project>

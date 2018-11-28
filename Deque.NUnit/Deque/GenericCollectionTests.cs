@@ -8,52 +8,54 @@ using NUnit.Framework;
 
 namespace Deque.NUnit.Deque
 {
-public class GenericCollectionTests
-{
-    [Test]
-    public void AddAppendsItemToTheRightEnd()
+    public class GenericCollectionTests
     {
-        ICollection<Int32> deque = new Deque<Int32>(new[] {1, 2, 3});
-        deque.Add(4);
+        /*
+        [Test]
+        public void AddAppendsItemToTheRightEnd()
+        {
+            ICollection<Int32> deque = new Deque<Int32>(new[] {1, 2, 3});
+            deque.Add(4);
+    
+            Assert.AreEqual(4,                  deque.Count);
+            Assert.AreEqual(new[] {1, 2, 3, 4}, deque as Deque<Int32>);
+        }
+        */
 
-        Assert.AreEqual(4,                  deque.Count);
-        Assert.AreEqual(new[] {1, 2, 3, 4}, deque as Deque<Int32>);
-    }
+        [Test]
+        public void ContainsReturnsTrueIfDequeHasItem()
+        {
+            var deque = new Deque<Int32>(new[] {1, 2, 3});
 
-    [Test]
-    public void ContainsReturnsTrueIfDequeHasItem()
-    {
-        var deque = new Deque<Int32>(new[] {1, 2, 3});
+            Assert.True(deque.Contains(2));
+        }
 
-        Assert.True(deque.Contains(2));
-    }
+        [Test]
+        public void ContainsReturnsFalseIfDequeDoesNotHaveItem()
+        {
+            var deque = new Deque<Int32>(new[] {1, 2, 3});
 
-    [Test]
-    public void ContainsReturnsFalseIfDequeDoesntHaveItem()
-    {
-        var deque = new Deque<Int32>(new[] {1, 2, 3});
+            Assert.False(deque.Contains(4));
+        }
 
-        Assert.False(deque.Contains(4));
-    }
+        [Test]
+        public void ClearResetsDeque()
+        {
+            var deque = new Deque<Int32>(new[] {1, 2, 3});
+            deque.Clear();
 
-    [Test]
-    public void ClearResetsDeque()
-    {
-        var deque = new Deque<Int32>(new[] {1, 2, 3});
-        deque.Clear();
+            Assert.AreEqual(0,            deque.Count);
+            Assert.AreEqual(new Int32[0], deque);
+        }
 
-        Assert.AreEqual(0,            deque.Count);
-        Assert.AreEqual(new Int32[0], deque);
-    }
+        [Test]
+        public void ClearKeepsCapacity()
+        {
+            var deque = new Deque<Int32>(6);
+            deque.Clear();
 
-    [Test]
-    public void ClearKeepsCapacity()
-    {
-        var deque = new Deque<Int32>(6);
-        deque.Clear();
-
-        Assert.AreEqual(6, deque.Capacity);
-    }
+            Assert.AreEqual(6, deque.Capacity);
+        }
 
 #if !DEBUG
     [Test]
@@ -115,147 +117,161 @@ public class GenericCollectionTests
     }
 #endif
 
-    [Test]
-    public void CopyToWithNullArrayThrowsException()
-    {
-        var deque = new Deque<Int32>(new[] {1, 2, 3});
-        Assert.Throws<ArgumentNullException>(() => deque.CopyTo(null, 0));
+        [Test]
+        public void CopyToWithNullArrayThrowsException()
+        {
+            var deque = new Deque<Int32>(new[] {1, 2, 3});
+            Assert.Throws<ArgumentNullException>(() => deque.CopyTo(null, 0));
+        }
+
+        [Test]
+        public void CopyToWithNegativeIndexThrowsException()
+        {
+            var deque = new Deque<Int32>(new[] {1, 2, 3});
+            var array = new Int32[1];
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => deque.CopyTo(array, -1));
+            Assert.True(array.AllDefault());
+        }
+
+        [Test]
+        public void CopyToWithIndexEqualToArrayLengthThrowsException()
+        {
+            var deque = new Deque<Int32>(new[] {1, 2, 3});
+            var array = new Int32[1];
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => deque.CopyTo(array, 1));
+            Assert.True(array.AllDefault());
+        }
+
+        [Test]
+        public void CopyToWithIndexGreaterThanArrayLengthThrowsException()
+        {
+            var deque = new Deque<Int32>(new[] {1, 2, 3});
+            var array = new Int32[1];
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => deque.CopyTo(array, 2));
+            Assert.True(array.AllDefault());
+        }
+
+        [Test]
+        public void CopyToThrowsExceptionIfArrayIsNotLongEnough()
+        {
+            var deque  = new Deque<Int32>(new[] {1, 2, 3});
+            var array1 = new Int32[2];
+            var array2 = new Int32[3];
+
+            Assert.Throws<ArgumentException>(() => deque.CopyTo(array1, 0));
+            Assert.Throws<ArgumentException>(() => deque.CopyTo(array2, 1));
+
+            Assert.True(array1.AllDefault());
+            Assert.True(array2.AllDefault());
+        }
+
+        [Test]
+        public void CopyToCopiesDequeContent()
+        {
+            var deque = new Deque<String>(new[] {"1", "2", "3"});
+            var array = new String[5];
+            deque.CopyTo(array, 1);
+
+            Assert.Null(array[0]);
+            Assert.Null(array[4]);
+            Assert.AreEqual(array.Skip(1).Take(3), deque);
+        }
+
+        [Test]
+        public void CopyToCopiesDequeContentWhenDequeLoopsAround()
+        {
+            var deque = new Deque<String>(new[] {"1", "2", "3"});
+            deque.PopRight();
+            deque.PushLeft("0");
+
+            var array = new String[5];
+            deque.CopyTo(array, 1);
+
+            Assert.Null(array[0]);
+            Assert.Null(array[4]);
+            Assert.AreEqual(array.Skip(1).Take(3), deque);
+        }
+
+        /*
+        [Test]
+        public void RemoveUnknownItemThrowsException()
+        {
+            ICollection<Int32> deque = new Deque<Int32>(new[] {2, 3, 4});
+            Assert.False(deque.Remove(5));
+        }
+    
+        [Test]
+        public void RemoveLeftmostItemRemovesItem()
+        {
+            ICollection<Int32> deque = new Deque<Int32>(new[] {2, 3, 4});
+    
+            Assert.True(deque.Remove(2));
+            Assert.AreEqual(new[] {3, 4}, deque as IEnumerable<Int32>);
+        }
+    
+        [Test]
+        public void RemoveRightmostItemRemovesItem()
+        {
+            ICollection<Int32> deque = new Deque<Int32>(new[] {2, 3, 4});
+    
+            Assert.True(deque.Remove(4));
+            Assert.AreEqual(new[] {2, 3}, deque as IEnumerable<Int32>);
+        }
+    
+        [Test]
+        public void RemoveItemTowardsTheLeftEndRemovesItem()
+        {
+            ICollection<Int32> deque = new Deque<Int32>(new[] {2, 3, 4, 5, 6, 7});
+    
+            Assert.True(deque.Remove(4));
+            Assert.AreEqual(new[] {2, 3, 5, 6, 7}, deque as IEnumerable<Int32>);
+        }
+    
+        [Test]
+        public void RemoveItemTowardsTheLeftEndRemovesItemWhenDequeLoopsAround()
+        {
+            var deque = new Deque<Int32>(new[] {2, 3, 4, 5, 6, 7});
+            deque.PopRight();
+            deque.PushLeft(1);
+    
+            Assert.True((deque as ICollection<Int32>).Remove(3));
+            Assert.AreEqual(new[] {1, 2, 4, 5, 6}, deque);
+        }
+    
+        [Test]
+        public void RemoveItemTowardsTheRightEndRemovesItem()
+        {
+            ICollection<Int32> deque = new Deque<Int32>(new[] {2, 3, 4, 5, 6, 7});
+    
+            Assert.True(deque.Remove(5));
+            Assert.AreEqual(new[] {2, 3, 4, 6, 7}, deque as IEnumerable<Int32>);
+        }
+    
+        [Test]
+        public void RemoveItemTowardsTheRightEndRemovesItemWhenDequeLoopsAround()
+        {
+            var deque = new Deque<Int32>(new[] {2, 3, 4, 5, 6, 7});
+            deque.PopLeft();
+            deque.PushRight(8);
+    
+            Assert.True((deque as ICollection<Int32>).Remove(6));
+            Assert.AreEqual(new[] {3, 4, 5, 7, 8}, deque);
+        }
+        */
+
+        [Test]
+        public void ToArrayCopiesDequeContentToNewArray()
+        {
+            var deque = new Deque<String>(new[] {"1", "2", "3"});
+            deque.PopRight();
+            deque.PushLeft("0");
+
+            var array = deque.ToArray();
+
+            Assert.AreEqual(array, deque);
+        }
     }
-
-    [Test]
-    public void CopyToWithNegativeIndexThrowsException()
-    {
-        var deque = new Deque<Int32>(new[] {1, 2, 3});
-        var array = new Int32[1];
-
-        Assert.Throws<ArgumentOutOfRangeException>(() => deque.CopyTo(array, -1));
-        Assert.True(array.AllDefault());
-    }
-
-    [Test]
-    public void CopyToWithIndexEqualToArrayLengthThrowsException()
-    {
-        var deque = new Deque<Int32>(new[] {1, 2, 3});
-        var array = new Int32[1];
-
-        Assert.Throws<ArgumentOutOfRangeException>(() => deque.CopyTo(array, 1));
-        Assert.True(array.AllDefault());
-    }
-
-    [Test]
-    public void CopyToWithIndexGreaterThanArrayLengthThrowsException()
-    {
-        var deque = new Deque<Int32>(new[] {1, 2, 3});
-        var array = new Int32[1];
-
-        Assert.Throws<ArgumentOutOfRangeException>(() => deque.CopyTo(array, 2));
-        Assert.True(array.AllDefault());
-    }
-
-    [Test]
-    public void CopyToThrowsExceptionIfArrayIsntLongEnough()
-    {
-        var deque  = new Deque<Int32>(new[] {1, 2, 3});
-        var array1 = new Int32[2];
-        var array2 = new Int32[3];
-
-        Assert.Throws<ArgumentException>(() => deque.CopyTo(array1, 0));
-        Assert.Throws<ArgumentException>(() => deque.CopyTo(array2, 1));
-
-        Assert.True(array1.AllDefault());
-        Assert.True(array2.AllDefault());
-    }
-
-    [Test]
-    public void CopyToCopiesDequesContent()
-    {
-        var deque = new Deque<String>(new[] {"1", "2", "3"});
-        var array = new String[5];
-        deque.CopyTo(array, 1);
-
-        Assert.Null(array[0]);
-        Assert.Null(array[4]);
-        Assert.AreEqual(array.Skip(1).Take(3), deque);
-    }
-
-    [Test]
-    public void CopyToCopiesDequesContentWhenDequeLoopsAround()
-    {
-        var deque = new Deque<String>(new[] {"1", "2", "3"});
-        deque.PopRight();
-        deque.PushLeft("0");
-
-        var array = new String[5];
-        deque.CopyTo(array, 1);
-
-        Assert.Null(array[0]);
-        Assert.Null(array[4]);
-        Assert.AreEqual(array.Skip(1).Take(3), deque);
-    }
-
-    [Test]
-    public void RemoveUnknownItemThrowsException()
-    {
-        ICollection<Int32> deque = new Deque<Int32>(new[] {2, 3, 4});
-        Assert.False(deque.Remove(5));
-    }
-
-    [Test]
-    public void RemoveLeftmostItemRemovesItem()
-    {
-        ICollection<Int32> deque = new Deque<Int32>(new[] {2, 3, 4});
-
-        Assert.True(deque.Remove(2));
-        Assert.AreEqual(new[] {3, 4}, deque as IEnumerable<Int32>);
-    }
-
-    [Test]
-    public void RemoveRightmostItemRemovesItem()
-    {
-        ICollection<Int32> deque = new Deque<Int32>(new[] {2, 3, 4});
-
-        Assert.True(deque.Remove(4));
-        Assert.AreEqual(new[] {2, 3}, deque as IEnumerable<Int32>);
-    }
-
-    [Test]
-    public void RemoveItemTowardsTheLeftEndRemovesItem()
-    {
-        ICollection<Int32> deque = new Deque<Int32>(new[] {2, 3, 4, 5, 6, 7});
-
-        Assert.True(deque.Remove(4));
-        Assert.AreEqual(new[] {2, 3, 5, 6, 7}, deque as IEnumerable<Int32>);
-    }
-
-    [Test]
-    public void RemoveItemTowardsTheLeftEndRemovesItemWhenDequeLoopsAround()
-    {
-        var deque = new Deque<Int32>(new[] {2, 3, 4, 5, 6, 7});
-        deque.PopRight();
-        deque.PushLeft(1);
-
-        Assert.True((deque as ICollection<Int32>).Remove(3));
-        Assert.AreEqual(new[] {1, 2, 4, 5, 6}, deque);
-    }
-
-    [Test]
-    public void RemoveItemTowardsTheRightEndRemovesItem()
-    {
-        ICollection<Int32> deque = new Deque<Int32>(new[] {2, 3, 4, 5, 6, 7});
-
-        Assert.True(deque.Remove(5));
-        Assert.AreEqual(new[] {2, 3, 4, 6, 7}, deque as IEnumerable<Int32>);
-    }
-
-    [Test]
-    public void RemoveItemTowardsTheRightEndRemovesItemWhenDequeLoopsAround()
-    {
-        var deque = new Deque<Int32>(new[] {2, 3, 4, 5, 6, 7});
-        deque.PopLeft();
-        deque.PushRight(8);
-
-        Assert.True((deque as ICollection<Int32>).Remove(6));
-        Assert.AreEqual(new[] {3, 4, 5, 7, 8}, deque);
-    }
-}
 }

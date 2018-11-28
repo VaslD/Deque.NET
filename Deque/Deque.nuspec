@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+    <metadata>
+        <id>Deque.NET</id>
+        <version>1.0.2.1</version>
+        <title>Deque.NET</title>
+        <authors>Diogo Castro</authors>
+        <owners>Diogo Castro</owners>
+        <licenseUrl>https://github.com/dcastro/DequeNET/blob/v1.0.2/LICENSE.txt</licenseUrl>
+        <projectUrl>https://github.com/dcastro/DequeNET</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Deque.NET provides a concurrent lock-free Deque C# implementation.
+
+A Deque, or Double-Ended Queue, is a data structure that allows insertion and removal of items on both ends.
+
+Concurrent Deque class supports 6 operations in constant time: Push Right, Pop Right, Peek Right, Push Left, Pop Left and Peek Left. Deque.NET also offers a simpler Deque class (not thread safe), implemented as a ring buffer. This implementation allows Pop and Peek operations to run in constant time and Push operations in amortized O(1) time.</description>
+        <releaseNotes>Targets .NET Standard 2.0. Classes are moved to System.Collections namespace.</releaseNotes>
+        <dependencies>
+            <group targetFramework=".NETStandard2.0" />
+        </dependencies>
+    </metadata>
+</package>
