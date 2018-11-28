@@ -227,5 +227,10 @@ namespace System.Collections.Generic
 
         T PeekLeft();
         T PeekRight();
+
+        Boolean Contains(T item);
+        T[]     ToArray();
+
+        void Clear();
     }
 }

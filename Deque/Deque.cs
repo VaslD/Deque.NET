@@ -244,6 +244,7 @@ namespace System.Collections.Generic
         /// </summary>
         private Int32 _leftIndex;
 
+        [NonSerialized]
         private Object _syncRoot;
 
         private Int32 _version;
@@ -303,81 +304,6 @@ namespace System.Collections.Generic
             }
         }
 
-        // ReSharper disable once CommentTypo
-        /*
-        /// <summary>
-        /// Adds an item to the <see cref="ICollection{T}"/>.
-        /// </summary>
-        /// <param name="item">The object to add to the <see cref="ICollection{T}"/>.</param>
-        /// <remarks>For <see cref="Deque{T}"/>, this operation will add the item to the right end of the deque.</remarks>
-        void ICollection<T>.Add(T item) { PushRight(item); }
-    
-        /// <summary>
-        /// Removes the first occurrence of a specific object from the <see cref="ICollection{T}"/>.
-        /// </summary>
-        /// <returns>
-        /// true if <paramref name="item"/> was successfully removed from the <see cref="ICollection{T}"/>; otherwise, false.
-        /// This method also returns false if <paramref name="item"/> is not found in the original <see cref="ICollection{T}"/>.
-        /// </returns>
-        /// <param name="item">The object to remove from the <see cref="ICollection{T}"/>.</param>
-        Boolean ICollection<T>.Remove(T item)
-        {
-            //find the index of the item to be removed in the deque
-            var comp         = EqualityComparer<T>.Default;
-            var virtualIndex = -1;
-            var counter      = 0;
-            foreach (var dequeItem in this)
-            {
-                if (comp.Equals(item, dequeItem))
-                {
-                    virtualIndex = counter;
-                    break;
-                }
-    
-                counter++;
-            }
-    
-            //return false if the item wasn't found
-            if (virtualIndex == -1) return false;
-    
-            //if the removal should be performed on one of the ends, use the corresponding Pop operation instead
-            if (virtualIndex == 0)
-                PopLeft();
-            else if (virtualIndex == Count - 1)
-                PopRight();
-            else
-            {
-                if (virtualIndex < Count / 2) //If the item is located towards the left end of the deque
-                {
-                    //move the items to the left of 'item' one index to the right
-                    for (var i = virtualIndex - 1; i >= 0; i--) this[i + 1] = this[i];
-    
-                    //clean leftmost item
-                    Left = default(T);
-    
-                    //increase left
-                    LeftIndex++;
-                    Count--;
-                }
-                else //If the item is located towards the right end of the deque
-                {
-                    //move the items to the right of 'item' one index to the left
-                    for (var i = virtualIndex + 1; i < Count; i++) this[i - 1] = this[i];
-    
-                    //clean rightmost item
-                    Right = default(T);
-    
-                    //decrease count
-                    Count--;
-                }
-    
-                _version++;
-            }
-    
-            return true;
-        }
-        */
-
         /// <summary>
         ///     Ensures that the capacity of this list is at least the given minimum value. If the current capacity of the list is
         ///     less, the capacity is increased to twice the current capacity
@@ -431,6 +357,7 @@ namespace System.Collections.Generic
         /// <summary>
         ///     Enumerates the elements of a <see cref="Deque{T}" />.
         /// </summary>
+        [Serializable]
         public struct Enumerator : IEnumerator<T>
         {
             private readonly Deque<T> _deque;
@@ -929,5 +856,80 @@ namespace System.Collections.Generic
         }
 
         #endregion
+
+        // ReSharper disable once CommentTypo
+        /*
+        /// <summary>
+        /// Adds an item to the <see cref="ICollection{T}"/>.
+        /// </summary>
+        /// <param name="item">The object to add to the <see cref="ICollection{T}"/>.</param>
+        /// <remarks>For <see cref="Deque{T}"/>, this operation will add the item to the right end of the deque.</remarks>
+        void ICollection<T>.Add(T item) { PushRight(item); }
+    
+        /// <summary>
+        /// Removes the first occurrence of a specific object from the <see cref="ICollection{T}"/>.
+        /// </summary>
+        /// <returns>
+        /// true if <paramref name="item"/> was successfully removed from the <see cref="ICollection{T}"/>; otherwise, false.
+        /// This method also returns false if <paramref name="item"/> is not found in the original <see cref="ICollection{T}"/>.
+        /// </returns>
+        /// <param name="item">The object to remove from the <see cref="ICollection{T}"/>.</param>
+        Boolean ICollection<T>.Remove(T item)
+        {
+            //find the index of the item to be removed in the deque
+            var comp         = EqualityComparer<T>.Default;
+            var virtualIndex = -1;
+            var counter      = 0;
+            foreach (var dequeItem in this)
+            {
+                if (comp.Equals(item, dequeItem))
+                {
+                    virtualIndex = counter;
+                    break;
+                }
+    
+                counter++;
+            }
+    
+            //return false if the item wasn't found
+            if (virtualIndex == -1) return false;
+    
+            //if the removal should be performed on one of the ends, use the corresponding Pop operation instead
+            if (virtualIndex == 0)
+                PopLeft();
+            else if (virtualIndex == Count - 1)
+                PopRight();
+            else
+            {
+                if (virtualIndex < Count / 2) //If the item is located towards the left end of the deque
+                {
+                    //move the items to the left of 'item' one index to the right
+                    for (var i = virtualIndex - 1; i >= 0; i--) this[i + 1] = this[i];
+    
+                    //clean leftmost item
+                    Left = default(T);
+    
+                    //increase left
+                    LeftIndex++;
+                    Count--;
+                }
+                else //If the item is located towards the right end of the deque
+                {
+                    //move the items to the right of 'item' one index to the left
+                    for (var i = virtualIndex + 1; i < Count; i++) this[i - 1] = this[i];
+    
+                    //clean rightmost item
+                    Right = default(T);
+    
+                    //decrease count
+                    Count--;
+                }
+    
+                _version++;
+            }
+    
+            return true;
+        }
+        */
     }
 }

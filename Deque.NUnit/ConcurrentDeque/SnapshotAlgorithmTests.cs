@@ -82,7 +82,7 @@ public class SnapshotAlgorithmTests
         Int32[] array = {0, 1, 2, 3, 4};
         var     deque = new ConcurrentDeque<Int32>(array);
 
-        Boolean  cancelled = false;
+        var  cancelled = false;
         Thread[] threads   = null;
         Action<ConcurrentDeque<Int32>> mutationCallback = d =>
                                                           {
@@ -118,10 +118,10 @@ public class SnapshotAlgorithmTests
 
     private static List<T> Execute<T>(ConcurrentDeque<T> deque, Action<ConcurrentDeque<T>> mutationCallback)
     {
-        //try to grab a reference to a stable anchor (fast route)
-        ConcurrentDeque<T>.Anchor anchor = deque._anchor;
+        // Try to grab a reference to a stable anchor (fast route)
+        var anchor = deque._anchor;
 
-        //try to grab a reference to a stable anchor (slow route)
+        // Try to grab a reference to a stable anchor (slow route)
         if (anchor._status != ConcurrentDeque<T>.DequeStatus.Stable)
         {
             var spinner = new SpinWait();
@@ -135,7 +135,7 @@ public class SnapshotAlgorithmTests
         var x = anchor._left;
         var y = anchor._right;
 
-        //run callback
+        // Run callback
         mutationCallback(deque);
 
         if (x == null) return new List<T>();
